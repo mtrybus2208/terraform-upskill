@@ -1,0 +1,13 @@
+{
+  "name": "upskill-aws-terraform",
+  "version": "1.0.0",
+  "scripts": {
+    "build-lambda-handlers": "npm run build:presigned-url-generator",
+    "build:presigned-url-generator": "cd lambda/presigned-url-generator && npm install && npm run build",
+    "terraform:init": "cd terraform && terraform init",
+    "terraform:apply": "cd terraform && terraform apply",
+    "terraform:destroy": "cd terraform && terraform destroy",
+    "deploy": "npm run build-lambda-handlers && npm run terraform:apply",
+    "destroy": "npm run terraform:destroy"
+  }
+}

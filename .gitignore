@@ -1,0 +1,26 @@
+# Local .terraform directories
+.terraform/
+.terraform.lock.hcl
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# Crash logs
+crash.log
+crash.*.log 
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json  
+*.tfplan
+*.backup 
+*.zip 
+.DS_Store 
+Thumbs.db
+
+# compiled output
+/dist
+/node_modules
+/lambda/presigned-url-generator/dist
+/lambda/presigned-url-generator/node_modules
