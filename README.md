@@ -43,3 +43,13 @@ If you need to destroy the resources created by Terraform, run:
 ```bash
 npm run destroy
 ```
+
+##### tfvars example
+
+You need to create separate files for prod and dev e.g. dev.tfvars and prod.tfvars and add values like
+
+```bash
+environment     = "dev"
+allowed_origins = "*"
+
+```

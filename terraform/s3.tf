@@ -1,8 +1,17 @@
-# Bucket creation and ownership controls
+resource "random_pet" "bucket_suffix" {
+  length = 2
+
+}
 resource "aws_s3_bucket" "photo_edit_lambda_bucket" {
-    bucket = "${local.environment}-lambda-photo-edit-handler-bucket"
-    force_destroy = true
-} 
+  bucket = "${local.environment}-lambda-photo-edit-handler-bucket-${random_pet.bucket_suffix.id}"
+
+  force_destroy = true
+  lifecycle {
+    ignore_changes = [
+      cors_rule
+    ]
+  }
+}
 
 resource "aws_s3_object" "presigned_url_generator" {
   bucket = aws_s3_bucket.photo_edit_lambda_bucket.id
@@ -10,3 +19,16 @@ resource "aws_s3_object" "presigned_url_generator" {
   source = data.archive_file.presigned_url_generator.output_path
   etag   = filemd5(data.archive_file.presigned_url_generator.output_path)
 }
+
+resource "aws_s3_bucket_cors_configuration" "bucket_cors_null" {
+  bucket = aws_s3_bucket.photo_edit_lambda_bucket.id
+
+  cors_rule {
+    allowed_methods = ["GET", "PUT"]
+    allowed_origins = [var.allowed_origins]
+    allowed_headers = ["*"]
+    expose_headers  = ["ETag"]
+    max_age_seconds = 3000
+  }
+}
+

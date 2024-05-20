@@ -4,8 +4,8 @@ resource "aws_lambda_function" "presigned_url_generator" {
   s3_key           = aws_s3_object.presigned_url_generator.key
   handler          = "index.handler"
   runtime          = "nodejs20.x"
-  role             = aws_iam_role.logging_role.arn
-  timeout          = 20
+  role             = aws_iam_role.presigned_url_generator_role.arn
+  timeout          = 5
   source_code_hash = data.archive_file.presigned_url_generator.output_base64sha256
 
   environment {
@@ -14,11 +14,6 @@ resource "aws_lambda_function" "presigned_url_generator" {
       ENV         = local.environment
     }
   }
-
-  depends_on = [
-    aws_iam_role_policy_attachment.logging_policy_attachment,
-    aws_iam_role_policy_attachment.s3_access_policy_attachment
-  ]
 }
 
 
