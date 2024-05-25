@@ -32,3 +32,22 @@ resource "aws_s3_bucket_cors_configuration" "bucket_cors_null" {
   }
 }
 
+resource "aws_s3_object" "s3_upload_processor" {
+  bucket = aws_s3_bucket.photo_edit_lambda_bucket.id
+  key    = "s3-upload-processor.zip"
+  source = data.archive_file.s3_upload_processor.output_path
+  etag   = filemd5(data.archive_file.s3_upload_processor.output_path)
+}
+
+resource "aws_s3_bucket_notification" "photo_edit_lambda_bucket_notification" {
+  bucket = aws_s3_bucket.photo_edit_lambda_bucket.id
+
+  lambda_function {
+    lambda_function_arn = aws_lambda_function.s3_upload_processor.arn
+    events              = ["s3:ObjectCreated:*"]
+    filter_prefix       = "uploads/"
+  }
+
+  depends_on = [aws_lambda_permission.s3_lambda_permission]
+}
+
