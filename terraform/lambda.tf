@@ -76,10 +76,12 @@ resource "aws_lambda_function" "sqs_message_processor" {
 
   environment {
     variables = {
-      ENV = local.environment
+      ENV                 = var.environment
+      DYNAMODB_TABLE_NAME = aws_dynamodb_table.image_metadata.name
     }
   }
 }
+
 
 resource "aws_cloudwatch_log_group" "sqs_message_processor_log_group" {
   name              = "/aws/lambda/${aws_lambda_function.sqs_message_processor.function_name}"

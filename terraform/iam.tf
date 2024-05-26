@@ -190,3 +190,27 @@ resource "aws_iam_role_policy_attachment" "s3_upload_processor_sqs_send_message_
   role       = aws_iam_role.s3_upload_processor_role.name
   policy_arn = aws_iam_policy.s3_upload_processor_sqs_send_message_policy.arn
 }
+
+# sqs_message_processor_dynamodb
+data "aws_iam_policy_document" "sqs_message_processor_dynamodb_access_policy" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "dynamodb:PutItem",
+      "dynamodb:UpdateItem"
+    ]
+    resources = [
+      aws_dynamodb_table.image_metadata.arn
+    ]
+  }
+}
+
+resource "aws_iam_policy" "sqs_message_processor_dynamodb_access_policy" {
+  name   = "${local.environment}-sqs-message-processor-dynamodb-access-policy"
+  policy = data.aws_iam_policy_document.sqs_message_processor_dynamodb_access_policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "sqs_message_processor_dynamodb_access_policy_attachment" {
+  role       = aws_iam_role.sqs_message_processor_role.name
+  policy_arn = aws_iam_policy.sqs_message_processor_dynamodb_access_policy.arn
+}
