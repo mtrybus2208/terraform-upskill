@@ -51,3 +51,10 @@ resource "aws_s3_bucket_notification" "photo_edit_lambda_bucket_notification" {
   depends_on = [aws_lambda_permission.s3_lambda_permission]
 }
 
+resource "aws_s3_object" "sqs_message_processor" {
+  bucket = aws_s3_bucket.photo_edit_lambda_bucket.id
+  key    = "sqs-message-processor.zip"
+  source = data.archive_file.sqs_message_processor.output_path
+  etag   = filemd5(data.archive_file.sqs_message_processor.output_path)
+}
+

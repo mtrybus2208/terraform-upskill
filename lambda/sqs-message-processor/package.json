@@ -1,7 +1,7 @@
 {
-  "name": "s3-upload-processor",
+  "name": "sqs-message-processor",
   "version": "1.0.0",
-  "description": "Lambda for process image upload",
+  "description": "Lambda for process sqs",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",

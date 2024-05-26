@@ -10,3 +10,9 @@ data "archive_file" "s3_upload_processor" {
   source_dir  = "${path.module}/../lambda/s3-upload-processor/dist"
   output_path = "${path.module}/../lambda/s3-upload-processor/build/s3-upload-processor-handler.zip"
 }
+
+data "archive_file" "sqs_message_processor" {
+  type        = "zip"
+  source_dir  = "${path.module}/../lambda/sqs-message-processor/dist"
+  output_path = "${path.module}/../lambda/sqs-message-processor/build/sqs-message-processor-handler.zip"
+}
