@@ -92,31 +92,8 @@ resource "aws_iam_role_policy_attachment" "s3_upload_processor_logging_policy_at
   role       = aws_iam_role.s3_upload_processor_role.name
   policy_arn = aws_iam_policy.s3_upload_processor_logging_policy.arn
 }
-
-data "aws_iam_policy_document" "s3_upload_processor_s3_access_policy" {
-  statement {
-    effect = "Allow"
-    actions = [
-      "s3:GetObject",
-      "s3:PutObject"
-    ]
-    resources = [
-      "${aws_s3_bucket.photo_edit_lambda_bucket.arn}",
-      "${aws_s3_bucket.photo_edit_lambda_bucket.arn}/*"
-    ]
-  }
-}
-
-resource "aws_iam_policy" "s3_upload_processor_s3_access_policy" {
-  name   = "${local.environment}-s3-upload-processor-s3-access-policy"
-  policy = data.aws_iam_policy_document.s3_upload_processor_s3_access_policy.json
-}
-
-resource "aws_iam_role_policy_attachment" "s3_upload_processor_s3_access_policy_attachment" {
-  role       = aws_iam_role.s3_upload_processor_role.name
-  policy_arn = aws_iam_policy.s3_upload_processor_s3_access_policy.arn
-}
-
+ 
+ 
 # sqs_message_processor
 resource "aws_iam_role" "sqs_message_processor_role" {
   name               = "${local.environment}-sqs-message-processor-role"

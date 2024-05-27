@@ -13,11 +13,11 @@ resource "aws_dynamodb_table" "image_metadata" {
     type = "S"
   }
 
-  global_secondary_index {
-    name            = "imageName-index"
-    hash_key        = "imageName"
-    projection_type = "ALL"
-  }
+global_secondary_index {
+  name            = "IMAGE_NAME_GSI"
+  hash_key        = "imageName"
+  projection_type = "ALL"
+}
 
   tags = {
     Environment = local.environment

@@ -5,18 +5,18 @@ const sqsClient = new SQSClient({ region: process.env.AWS_REGION });
 const queueUrl = process.env.SQS_QUEUE_URL || "";
 
 export const handler: S3Handler = async (event) => {
-  console.log("Received S3 event:", JSON.stringify(event, null, 2));
 
   for (const record of event.Records) {
     const bucket = record.s3.bucket.name;
     const key = record.s3.object.key;
 
-    const deduplicationId = `${bucket}-${key}`;
+    console.log(`Processing file from bucket: ${bucket}, key: ${key}`);
 
+ 
     const params = {
       QueueUrl: queueUrl,
       MessageBody: JSON.stringify({ bucket, key }),
-      MessageDeduplicationId: deduplicationId,
+      MessageDeduplicationId: key,
       MessageGroupId: "default",
     };
 
