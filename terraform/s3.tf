@@ -58,3 +58,18 @@ resource "aws_s3_object" "sqs_message_processor" {
   etag   = filemd5(data.archive_file.sqs_message_processor.output_path)
 }
 
+resource "aws_s3_object" "get_images_for_user" {
+  bucket = aws_s3_bucket.photo_edit_lambda_bucket.id
+  key    = "get-images-for-user.zip"
+  source = data.archive_file.get_images_for_user.output_path
+  etag   = filemd5(data.archive_file.get_images_for_user.output_path)
+}
+
+
+resource "aws_s3_object" "get_single_image" {
+  bucket = aws_s3_bucket.photo_edit_lambda_bucket.id
+  key    = "get-single-image.zip"
+  source = data.archive_file.get_single_image.output_path
+  etag   = filemd5(data.archive_file.get_single_image.output_path)
+}
+

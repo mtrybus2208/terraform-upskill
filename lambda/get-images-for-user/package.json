@@ -1,0 +1,21 @@
+{
+  "name": "get-images-for-user",
+  "version": "1.0.0",
+  "description": "Lambda for get user images",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.584.0",
+    "@aws-sdk/client-s3": "^3.576.0",
+    "@aws-sdk/client-sqs": "^3.583.0",
+    "@aws-sdk/s3-request-presigner": "^3.576.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.92",
+    "@types/node": "^20.12.12",
+    "typescript": "^5.0.0"
+  }
+}

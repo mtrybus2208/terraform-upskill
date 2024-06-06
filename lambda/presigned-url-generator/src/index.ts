@@ -30,13 +30,25 @@ export const handler = async (
   const bucketName = process.env.BUCKET_NAME;
   const requestBody = JSON.parse(event.body || "{}");
   const filename = `uploads/${requestBody.filename || Date.now()}`;
+  const userName = requestBody.userName;
+
+  if (!userName) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: "Missing userName parameter - Presigned" }),
+    };
+  }
 
   try {
     const command = new PutObjectCommand({
       Bucket: bucketName,
       Key: filename,
+      Metadata: {
+        userName: userName,
+      },
     });
     const url = await getSignedUrl(s3Client, command, { expiresIn: 60 });
+
     return {
       statusCode: 200,
       body: JSON.stringify({ url, key: filename }),
