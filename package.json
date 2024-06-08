@@ -2,8 +2,8 @@
   "name": "upskill-aws-terraform",
   "version": "1.0.0",
   "scripts": {
-    "build-lambda-handlers": "npm run build:presigned-url-generator",
     "build:presigned-url-generator": "cd lambda/presigned-url-generator && npm install && npm run build",
+    "build:s3-upload-processor": "cd lambda/s3-upload-processor && npm install && npm run build",
     "deploy:dev": "./scripts/deploy.sh dev",
     "deploy:prod": "./scripts/deploy.sh prod",
     "destroy:dev": "./scripts/destroy.sh dev",

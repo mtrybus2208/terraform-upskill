@@ -3,7 +3,7 @@ resource "aws_apigatewayv2_api" "photo_api" {
   protocol_type = "HTTP"
   cors_configuration {
     allow_origins = [var.allowed_origins]
-    allow_methods = ["POST"]
+    allow_methods = ["POST", "GET"]
     allow_headers = ["Content-Type"]
   }
 }
@@ -27,7 +27,34 @@ resource "aws_apigatewayv2_integration" "photo_post_integration" {
 
 resource "aws_apigatewayv2_route" "photo_post_route" {
   api_id    = aws_apigatewayv2_api.photo_api.id
-  route_key = "POST /photo"
+  route_key = "POST /photos"
   target    = "integrations/${aws_apigatewayv2_integration.photo_post_integration.id}"
 }
 
+# get all images
+resource "aws_apigatewayv2_integration" "photo_get_integration" {
+  api_id             = aws_apigatewayv2_api.photo_api.id
+  integration_type   = "AWS_PROXY"
+  integration_uri    = aws_lambda_function.get_images_for_user.arn
+  integration_method = "GET"
+}
+
+resource "aws_apigatewayv2_route" "photo_get_route" {
+  api_id    = aws_apigatewayv2_api.photo_api.id
+  route_key = "GET /users/{userName}/photos"
+  target    = "integrations/${aws_apigatewayv2_integration.photo_get_integration.id}"
+}
+
+# get single photo
+resource "aws_apigatewayv2_route" "photo_get_single_route" {
+  api_id    = aws_apigatewayv2_api.photo_api.id
+  route_key = "GET /users/{userName}/photos/{imageId}"
+  target    = "integrations/${aws_apigatewayv2_integration.photo_get_single_integration.id}"
+}
+
+resource "aws_apigatewayv2_integration" "photo_get_single_integration" {
+  api_id             = aws_apigatewayv2_api.photo_api.id
+  integration_type   = "AWS_PROXY"
+  integration_uri    = aws_lambda_function.get_single_image.arn
+  integration_method = "GET"
+}

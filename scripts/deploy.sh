@@ -11,10 +11,15 @@ else
 fi
 
 # Build Lambda handlers
-cd lambda/presigned-url-generator || exit
-npm install
-npm run build
-cd ../../
+for dir in lambda/*/; do
+  if [ -f "${dir}package.json" ]; then
+    cd "$dir" || exit
+    npm install
+    npm run build
+    cd - || exit
+  fi
+done
+
 
 # Initialize Terraform
 cd terraform || exit
