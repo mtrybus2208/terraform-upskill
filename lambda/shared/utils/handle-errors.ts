@@ -1,8 +1,6 @@
 import { APIGatewayProxyResult } from "aws-lambda";
 
-export interface HttpError extends Error {
-  status?: number;
-}
+import { HttpError } from "../types";
 
 export function handleErrors(error: unknown): APIGatewayProxyResult {
   const errorMessage =

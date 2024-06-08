@@ -1,10 +1,13 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { DynamoDBClient, QueryCommand } from "@aws-sdk/client-dynamodb";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { QueryCommand, DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { S3Client } from "@aws-sdk/client-s3";
+
 import { getImagesSignedUrls } from "./utils/getImagesSignedUrls";
-import { handleErrors } from "./utils/handleErrors";
+import { handleErrors } from "../../shared/utils/handle-errors";
 
 const dynamoDBClient = new DynamoDBClient({});
+const ddbDocClient = DynamoDBDocument.from(dynamoDBClient);
 const s3Client = new S3Client();
 
 export const handler = async (
@@ -22,18 +25,16 @@ export const handler = async (
   try {
     const input = {
       ExpressionAttributeValues: {
-        ":v1": {
-          S: pathParameters.userName,
-        },
+        ":userName": pathParameters.userName,
       },
-      KeyConditionExpression: "userName = :v1",
+      KeyConditionExpression: "userName = :userName",
       ProjectionExpression:
         "userName, imageId, imageName, imageBucket, imageKey",
       TableName: process.env.DYNAMODB_TABLE_NAME || "",
     };
 
     const command = new QueryCommand(input);
-    const response = await dynamoDBClient.send(command);
+    const response = await ddbDocClient.send(command);
 
     if (!response.Items) {
       return {

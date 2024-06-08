@@ -3,7 +3,7 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { S3Client } from "@aws-sdk/client-s3";
 import { getImageData } from "./utils/get-image-data";
 import { generatePresignedUrl } from "./utils/generate-presigned-url";
-import { handleErrors } from "./utils/handle-errors";
+import { handleErrors } from "../../shared/utils/handle-errors";
 
 const dynamoDBClient = new DynamoDBClient({});
 const s3Client = new S3Client();

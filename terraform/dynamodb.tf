@@ -19,11 +19,10 @@ resource "aws_dynamodb_table" "image_metadata" {
     type = "S"
   }
 
-  global_secondary_index {
-    name            = "IMAGE_NAME_GSI"
-    hash_key        = "imageName"
-    range_key       = "imageId"
+  local_secondary_index {
+    name            = "IMAGE_NAME_LSI"
     projection_type = "ALL"
+    range_key       = "imageName"
   }
 
   tags = {
