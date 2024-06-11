@@ -20,3 +20,10 @@ variable "allowed_origins" {
   default     = "*"
 }
 
+variable "notification_email" {
+  description = "Email to sns image upload notofication"
+  type        = string
+  default     = "test123@gmail.com"
+}
+
+

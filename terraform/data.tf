@@ -27,6 +27,11 @@ data "archive_file" "get_images_for_user" {
 data "archive_file" "get_single_image" {
   type        = "zip"
   source_dir  = "${path.module}/../lambda/get-single-image/dist"
-  output_path = "${path.module}/../lambda/get-single-image/buildget-single-image-handler.zip"
+  output_path = "${path.module}/../lambda/get-single-image/build/get-single-image-handler.zip"
 }
 
+data "archive_file" "dynamo_image_upload_handler" {
+  type        = "zip"
+  source_dir  = "${path.module}/../lambda/dynamo-image-upload-handler/dist"
+  output_path = "${path.module}/../lambda/dynamo-image-upload-handler/build/dynamo-image-upload-handler.zip"
+}

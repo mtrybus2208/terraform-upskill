@@ -73,3 +73,10 @@ resource "aws_s3_object" "get_single_image" {
   etag   = filemd5(data.archive_file.get_single_image.output_path)
 }
 
+resource "aws_s3_object" "dynamo_image_upload_handler" {
+  bucket = aws_s3_bucket.photo_edit_lambda_bucket.id
+  key    = "dynamo-image-upload-handler.zip"
+  source = data.archive_file.dynamo_image_upload_handler.output_path
+  etag   = filemd5(data.archive_file.dynamo_image_upload_handler.output_path)
+}
+

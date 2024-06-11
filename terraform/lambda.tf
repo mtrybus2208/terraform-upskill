@@ -160,3 +160,38 @@ resource "aws_lambda_permission" "api_gw_get_single_image_permission" {
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.photo_api.execution_arn}/*/*"
 }
+
+# dynamo-image-upload-handler fn
+
+resource "aws_lambda_function" "dynamo_image_upload_handler" {
+  function_name    = "${local.environment}-dynamo-image-upload-handler"
+  s3_bucket        = aws_s3_bucket.photo_edit_lambda_bucket.id
+  s3_key           = aws_s3_object.dynamo_image_upload_handler.key 
+  handler          = "index.handler"
+  runtime          = "nodejs20.x"
+  role             = aws_iam_role.dynamo_image_upload_handler_role.arn 
+  timeout          = 5
+  source_code_hash = data.archive_file.dynamo_image_upload_handler.output_base64sha256
+
+  environment {
+    variables = {
+      BUCKET_NAME            = aws_s3_bucket.photo_edit_lambda_bucket.bucket
+      DYNAMODB_TABLE_NAME    = aws_dynamodb_table.image_metadata.name
+      REGION                 = var.region
+      IMAGE_UPLOAD_TOPIC_ARN = aws_sns_topic.image_upload_notifications_topic.arn
+    }
+  }
+}
+
+resource "aws_lambda_event_source_mapping" "dynamo_stream_trigger" {
+  event_source_arn  = aws_dynamodb_table.image_metadata.stream_arn
+  function_name     = aws_lambda_function.dynamo_image_upload_handler.arn
+  batch_size        = 10
+  enabled           = true
+  starting_position = "LATEST" 
+} 
+
+resource "aws_cloudwatch_log_group" "dynamo_image_upload_handler_log_group" {
+  name              = "/aws/lambda/${aws_lambda_function.dynamo_image_upload_handler.function_name}"
+  retention_in_days = 30
+}
