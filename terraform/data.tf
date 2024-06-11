@@ -41,3 +41,9 @@ data "archive_file" "photo_api_authorizer" {
   source_dir  = "${path.module}/../lambda/photo-api-authorizer/dist"
   output_path = "${path.module}/../lambda/photo-api-authorizer/build/photo-api-authorizer.zip"
 }
+
+data "archive_file" "sns_image_upload_handler" {
+  type        = "zip"
+  source_dir  = "${path.module}/../lambda/sns-image-upload-handler/dist"
+  output_path = "${path.module}/../lambda/sns-image-upload-handler/build/sns-image-upload-handler.zip"
+}

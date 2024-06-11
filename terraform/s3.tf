@@ -87,4 +87,10 @@ resource "aws_s3_object" "photo_api_authorizer" {
   etag   = filemd5(data.archive_file.photo_api_authorizer.output_path)
 }
 
+resource "aws_s3_object" "sns_image_upload_handler" {
+  bucket = aws_s3_bucket.photo_edit_lambda_bucket.id
+  key    = "sns-image-upload-handler.zip"
+  source = data.archive_file.sns_image_upload_handler.output_path
+  etag   = filemd5(data.archive_file.sns_image_upload_handler.output_path)
+}
 

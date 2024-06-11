@@ -227,3 +227,35 @@ resource "aws_lambda_permission" "allow_api_gw_invoke_authorizer" {
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.photo_api.execution_arn}/*/*"
 }
+
+# sns_image_upload_handler fn
+
+resource "aws_lambda_function" "sns_image_upload_handler" {
+  function_name    = "${local.environment}-sns-image-upload-handler"
+  s3_bucket        = aws_s3_bucket.photo_edit_lambda_bucket.id
+  s3_key           = aws_s3_object.sns_image_upload_handler.key 
+  handler          = "index.handler"
+  runtime          = "nodejs20.x"
+  role             = aws_iam_role.sns_image_upload_handler_role.arn  
+  timeout          = 5
+  source_code_hash = data.archive_file.sns_image_upload_handler.output_base64sha256
+
+  environment {
+    variables = {
+      REGION            = var.region 
+    }
+  }
+}
+
+resource "aws_cloudwatch_log_group" "sns_image_upload_handler_log_group" {
+  name              = "/aws/lambda/${aws_lambda_function.sns_image_upload_handler.function_name}"
+  retention_in_days = 30
+}
+
+resource "aws_lambda_permission" "sns_lambda_permission" {
+  statement_id  = "AllowSNSInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.sns_image_upload_handler.function_name
+  principal     = "sns.amazonaws.com"
+  source_arn    = aws_sns_topic.image_upload_notifications_topic.arn
+}

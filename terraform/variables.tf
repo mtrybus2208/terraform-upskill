@@ -31,5 +31,3 @@ variable "valid_token_mock" {
   type        = string
   default     = "secretToken"
 }
-
-
