@@ -195,3 +195,35 @@ resource "aws_cloudwatch_log_group" "dynamo_image_upload_handler_log_group" {
   name              = "/aws/lambda/${aws_lambda_function.dynamo_image_upload_handler.function_name}"
   retention_in_days = 30
 }
+
+# photo-api-authorizer fn
+resource "aws_lambda_function" "photo_api_authorizer" {
+  function_name    = "${local.environment}-photo-api-authorizer"
+  s3_bucket        = aws_s3_bucket.photo_edit_lambda_bucket.id
+  s3_key           = aws_s3_object.photo_api_authorizer.key 
+  handler          = "index.handler"
+  runtime          = "nodejs20.x"
+  role             = aws_iam_role.photo_api_authorizer_role.arn  
+  timeout          = 5
+  source_code_hash = data.archive_file.photo_api_authorizer.output_base64sha256
+
+  environment {
+    variables = {
+      VALID_TOKEN_MOCK  = var.valid_token_mock 
+      REGION            = var.region 
+    }
+  }
+}
+
+resource "aws_cloudwatch_log_group" "photo_api_authorizer_log_group" {
+  name              = "/aws/lambda/${aws_lambda_function.photo_api_authorizer.function_name}"
+  retention_in_days = 30
+}
+
+resource "aws_lambda_permission" "allow_api_gw_invoke_authorizer" {
+  statement_id  = "allowInvokeFromAPIGatewayAuthorizer"  
+  action        = "lambda:InvokeFunction"  
+  function_name = aws_lambda_function.photo_api_authorizer.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.photo_api.execution_arn}/*/*"
+}

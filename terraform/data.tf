@@ -35,3 +35,9 @@ data "archive_file" "dynamo_image_upload_handler" {
   source_dir  = "${path.module}/../lambda/dynamo-image-upload-handler/dist"
   output_path = "${path.module}/../lambda/dynamo-image-upload-handler/build/dynamo-image-upload-handler.zip"
 }
+
+data "archive_file" "photo_api_authorizer" {
+  type        = "zip"
+  source_dir  = "${path.module}/../lambda/photo-api-authorizer/dist"
+  output_path = "${path.module}/../lambda/photo-api-authorizer/build/photo-api-authorizer.zip"
+}

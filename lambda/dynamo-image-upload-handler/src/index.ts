@@ -26,7 +26,6 @@ export const handler: DynamoDBStreamHandler = async (event) => {
         );
       }
     } catch (error) {
-      console.log({ error });
       handleErrors(error);
     }
   }

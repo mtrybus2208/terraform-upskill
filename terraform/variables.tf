@@ -26,4 +26,10 @@ variable "notification_email" {
   default     = "test123@gmail.com"
 }
 
+variable "valid_token_mock" {
+  description = "Mocked value for auth token"
+  type        = string
+  default     = "secretToken"
+}
+
 

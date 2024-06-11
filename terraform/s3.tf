@@ -80,3 +80,11 @@ resource "aws_s3_object" "dynamo_image_upload_handler" {
   etag   = filemd5(data.archive_file.dynamo_image_upload_handler.output_path)
 }
 
+resource "aws_s3_object" "photo_api_authorizer" {
+  bucket = aws_s3_bucket.photo_edit_lambda_bucket.id
+  key    = "photo-api-authorizer.zip"
+  source = data.archive_file.photo_api_authorizer.output_path
+  etag   = filemd5(data.archive_file.photo_api_authorizer.output_path)
+}
+
+

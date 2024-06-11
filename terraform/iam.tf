@@ -364,3 +364,33 @@ resource "aws_iam_role_policy_attachment" "dynamo_image_upload_handler_logging_p
   role       = aws_iam_role.dynamo_image_upload_handler_role.name
   policy_arn = aws_iam_policy.dynamo_image_upload_handler_logging_policy.arn
 }
+
+# iam photo_api_authorizer fn
+data "aws_iam_policy_document" "photo_api_authorizer_logging_policy_doc" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+    resources = ["arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/${aws_lambda_function.photo_api_authorizer.function_name}:*"]
+  }
+}
+
+resource "aws_iam_policy" "photo_api_authorizer_logging_policy" {
+  description = "IAM policy allowing logging actions for photo_api_authorizer lambda function."
+
+  name   = "${local.environment}-photo-api-authorizer-logging-policy"
+  policy = data.aws_iam_policy_document.photo_api_authorizer_logging_policy_doc.json
+}
+
+resource "aws_iam_role" "photo_api_authorizer_role" {
+  name               = "${local.environment}-photo-api-authorizer"
+  assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "photo_api_authorizer_logging_policy_attachment" {
+  role       = aws_iam_role.photo_api_authorizer_role.name
+  policy_arn = aws_iam_policy.photo_api_authorizer_logging_policy.arn
+}
