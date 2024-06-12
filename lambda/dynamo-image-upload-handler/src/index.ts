@@ -13,7 +13,7 @@ export const handler: DynamoDBStreamHandler = async (event) => {
     try {
       if (recordImage) {
         const data = unmarshall(
-          recordImage as { [key: string]: AttributeValue }
+          recordImage as Record<string, AttributeValue>
         ) as ImageMetaDataDto;
 
         await publishToSns<SnsEventTypes, ImageMetaDataDto>(

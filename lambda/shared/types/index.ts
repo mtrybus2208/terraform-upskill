@@ -21,10 +21,10 @@ export type ImageMetaDataItem = {
   timestamp: number;
 };
 
-export type ImageMetaDataEventMap = {
-  [SnsEventTypes.IMAGE_CREATED]: ImageMetaDataDto;
-};
-
+export type ImageMetaDataEventMap = Record<
+  SnsEventTypes.IMAGE_CREATED,
+  ImageMetaDataDto
+>;
 export interface SnsEvent<T = unknown, U = unknown> {
   eventType: T;
   data: U;
