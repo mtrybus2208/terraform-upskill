@@ -1,18 +1,16 @@
 {
-  "name": "sqs-message-processor",
+  "name": "dynamo-image-upload-handler",
   "version": "1.0.0",
-  "description": "Lambda for process sqs",
+  "description": "Lambda triggered by image upload to db",
   "main": "dist/index.js",
   "scripts": {
     "build": "node esbuild.config.js",
     "prepare": "npm run build"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.584.0",
-    "@aws-sdk/client-s3": "^3.576.0",
-    "@aws-sdk/client-sqs": "^3.583.0",
-    "@aws-sdk/lib-dynamodb": "^3.592.0",
-    "@aws-sdk/s3-request-presigner": "^3.576.0"
+    "@aws-sdk/client-dynamodb": "^3.592.0",
+    "@aws-sdk/client-sns": "^3.592.0",
+    "@aws-sdk/util-dynamodb": "^3.592.0"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.92",

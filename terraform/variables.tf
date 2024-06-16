@@ -20,3 +20,14 @@ variable "allowed_origins" {
   default     = "*"
 }
 
+variable "notification_email" {
+  description = "Email to sns image upload notofication"
+  type        = string
+  default     = "test123@gmail.com"
+}
+
+variable "valid_token_mock" {
+  description = "Mocked value for auth token"
+  type        = string
+  default     = "secretToken"
+}

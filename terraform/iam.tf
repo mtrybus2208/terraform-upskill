@@ -217,6 +217,7 @@ resource "aws_iam_role_policy_attachment" "s3_upload_processor_get_object_policy
 }
 
 # iam get_images_for_user lambda fn
+
 data "aws_iam_policy_document" "get_images_for_user_logging_policy_doc" {
   statement {
     effect = "Allow"
@@ -304,4 +305,124 @@ resource "aws_iam_role_policy_attachment" "get_single_image_policy_attachment" {
 resource "aws_iam_role_policy_attachment" "get_single_image_logging_policy_attachment" {
   role       = aws_iam_role.get_single_image_role.name
   policy_arn = aws_iam_policy.logging_policy.arn
+}
+
+# iam dynamo-image-upload-handler fn
+
+data "aws_iam_policy_document" "dynamo_image_upload_handler_logging_policy_doc" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+    resources = ["arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/${aws_lambda_function.dynamo_image_upload_handler.function_name}:*"]
+  }
+}
+
+data "aws_iam_policy_document" "dynamo_image_upload_handler_policy_doc" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "dynamodb:DescribeStream",
+      "dynamodb:GetRecords",
+      "dynamodb:GetShardIterator",
+      "dynamodb:ListStreams", 
+      "sns:Publish"
+    ]
+    resources = [
+      aws_dynamodb_table.image_metadata.stream_arn,
+      aws_sns_topic.image_upload_notifications_topic.arn
+    ]
+  }
+}
+
+resource "aws_iam_policy" "dynamo_image_upload_handler_policy" {
+  name   = "${local.environment}-dynamo-image-upload-handler-policy"
+  policy = data.aws_iam_policy_document.dynamo_image_upload_handler_policy_doc.json
+}
+
+resource "aws_iam_policy" "dynamo_image_upload_handler_logging_policy" {
+  description = "IAM policy allowing logging actions for dynamo_image_upload_handler lambda function."
+
+  name   = "${local.environment}-dynamo-image-upload-handler-logging-policy"
+  policy = data.aws_iam_policy_document.dynamo_image_upload_handler_logging_policy_doc.json
+}
+
+resource "aws_iam_role" "dynamo_image_upload_handler_role" {
+  name               = "${local.environment}-dynamo-image-upload-handler"
+  assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "dynamo_image_upload_handler_attachment" {
+  role       = aws_iam_role.dynamo_image_upload_handler_role.name
+  policy_arn = aws_iam_policy.dynamo_image_upload_handler_policy.arn
+}
+
+resource "aws_iam_role_policy_attachment" "dynamo_image_upload_handler_logging_policy_attachment" {
+  role       = aws_iam_role.dynamo_image_upload_handler_role.name
+  policy_arn = aws_iam_policy.dynamo_image_upload_handler_logging_policy.arn
+}
+
+# iam photo_api_authorizer fn
+data "aws_iam_policy_document" "photo_api_authorizer_logging_policy_doc" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+    resources = ["arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/${aws_lambda_function.photo_api_authorizer.function_name}:*"]
+  }
+}
+
+resource "aws_iam_policy" "photo_api_authorizer_logging_policy" {
+  description = "IAM policy allowing logging actions for photo_api_authorizer lambda function."
+
+  name   = "${local.environment}-photo-api-authorizer-logging-policy"
+  policy = data.aws_iam_policy_document.photo_api_authorizer_logging_policy_doc.json
+}
+
+resource "aws_iam_role" "photo_api_authorizer_role" {
+  name               = "${local.environment}-photo-api-authorizer"
+  assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "photo_api_authorizer_logging_policy_attachment" {
+  role       = aws_iam_role.photo_api_authorizer_role.name
+  policy_arn = aws_iam_policy.photo_api_authorizer_logging_policy.arn
+}
+
+# sns_image_upload_handler fn
+
+data "aws_iam_policy_document" "sns_image_upload_handler_logging_policy_doc" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+    resources = ["arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/${aws_lambda_function.sns_image_upload_handler.function_name}:*"]
+  }
+}
+
+resource "aws_iam_policy" "sns_image_upload_handler_logging_policy" {
+  description = "IAM policy allowing logging actions for sns_image_upload_handler lambda function."
+
+  name   = "${local.environment}-sns-image-upload-handler-logging-policy"
+  policy = data.aws_iam_policy_document.sns_image_upload_handler_logging_policy_doc.json
+}
+
+
+resource "aws_iam_role" "sns_image_upload_handler_role" {
+  name               = "${local.environment}-sns-image-upload-handler"
+  assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "sns_image_upload_handler_logging_policy_attachment" {
+  role       = aws_iam_role.sns_image_upload_handler_role.name
+  policy_arn = aws_iam_policy.sns_image_upload_handler_logging_policy.arn
 }

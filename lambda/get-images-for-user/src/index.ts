@@ -5,6 +5,7 @@ import { S3Client } from "@aws-sdk/client-s3";
 
 import { getImagesSignedUrls } from "./utils/getImagesSignedUrls";
 import { handleErrors } from "../../shared/utils/handle-errors";
+import { ImageMetaDataItem } from "../../shared/types";
 
 const dynamoDBClient = new DynamoDBClient({});
 const ddbDocClient = DynamoDBDocument.from(dynamoDBClient);
@@ -24,26 +25,28 @@ export const handler = async (
 
   try {
     const input = {
+      TableName: process.env.DYNAMODB_TABLE_NAME || "",
+      KeyConditionExpression: "userName = :userName",
       ExpressionAttributeValues: {
         ":userName": pathParameters.userName,
       },
-      KeyConditionExpression: "userName = :userName",
-      ProjectionExpression:
-        "userName, imageId, imageName, imageBucket, imageKey",
-      TableName: process.env.DYNAMODB_TABLE_NAME || "",
+      ConsistentRead: true,
     };
 
     const command = new QueryCommand(input);
     const response = await ddbDocClient.send(command);
 
-    if (!response.Items) {
+    if (!response.Items?.length) {
       return {
         statusCode: 404,
         body: JSON.stringify({ error: "No items found" }),
       };
     }
 
-    const urls = await getImagesSignedUrls(response.Items, s3Client);
+    const urls = await getImagesSignedUrls(
+      response.Items as ImageMetaDataItem[],
+      s3Client
+    );
 
     return {
       statusCode: 200,

@@ -12,6 +12,11 @@ fi
 
 # Build Lambda handlers
 for dir in lambda/*/; do
+  # Skip the shared directory
+  if [ "$dir" == "lambda/shared/" ]; then
+    continue
+  fi
+  
   if [ -f "${dir}package.json" ]; then
     cd "$dir" || exit
     npm install
@@ -19,7 +24,6 @@ for dir in lambda/*/; do
     cd - || exit
   fi
 done
-
 
 # Initialize Terraform
 cd terraform || exit

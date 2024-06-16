@@ -6,8 +6,11 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "outDir": "./dist"
+    "baseUrl": ".",
+    "paths": {
+      "*": ["../../shared/*"]
+    }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "../../shared/**/*"],
   "exclude": ["node_modules"]
 }

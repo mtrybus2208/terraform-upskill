@@ -3,6 +3,8 @@ resource "aws_dynamodb_table" "image_metadata" {
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "userName"
   range_key    = "imageId"
+  stream_enabled   = true
+  stream_view_type = "NEW_IMAGE"
 
   attribute {
     name = "userName"
@@ -28,4 +30,4 @@ resource "aws_dynamodb_table" "image_metadata" {
   tags = {
     Environment = local.environment
   }
-}
+} 
