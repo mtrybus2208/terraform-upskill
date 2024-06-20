@@ -1,3 +1,13 @@
+variable "environment" {
+  type = string
+}
+
+variable "allowed_origins" {
+  description = "Allowed origins for CORS"
+  type        = string
+  default     = "*"
+}
+
 variable "region" {
   type        = string
   description = "AWS region identifier."
@@ -7,15 +17,4 @@ variable "region" {
     error_message = "Must be a valid AWS region identifier."
   }
 }
-
-variable "environment" {
-  description = "The environment to deploy (dev or prod)"
-  type        = string
-  default     = "dev"
-}
-
-variable "allowed_origins" {
-  description = "Allowed origins for CORS"
-  type        = string
-  default     = "*"
-}
+ 
