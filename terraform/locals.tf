@@ -1,4 +1,4 @@
 locals {
-  environment = "mtrybus"
+  prefix = "mtrybus"
 }
- 
+
