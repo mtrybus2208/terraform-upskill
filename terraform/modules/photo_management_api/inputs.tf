@@ -52,4 +52,18 @@ variable "photo_edit_lambda_bucket_arn" {
 variable "stage" {
   type = string
 }
- 
+
+variable "user_pool_id" {
+  description = "user pool id"
+  type        = string
+}
+
+ variable "user_pool_endpoint" {
+  description = "user pool endpoint"
+  type        = string
+}
+
+ variable "user_pool_client_id" {
+  description = "user pool client id"
+  type        = string
+}

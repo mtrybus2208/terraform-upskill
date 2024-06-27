@@ -21,6 +21,10 @@ module "photo_management_api" {
   image_metadata_table_arn      = module.photo_storage.image_metadata_table_arn
   photo_edit_lambda_bucket_arn  = module.photo_storage.photo_edit_lambda_bucket_arn
   stage           = var.environment
+  user_pool_id  = module.auth.user_pool_id
+  user_pool_endpoint  = module.auth.user_pool_endpoint
+  user_pool_client_id  = module.auth.user_pool_client_id 
+
 }
 
 module "photo_storage" {
@@ -42,4 +46,15 @@ module "notification_services" {
   image_metadata_table_name     = module.photo_storage.image_metadata_table_name
   photo_edit_lambda_bucket_name = module.photo_storage.photo_edit_lambda_bucket_name
   image_metadata_table_stream_arn = module.photo_storage.image_metadata_table_stream_arn
+}
+
+module "auth" {
+  source = "./modules/auth"
+
+  region          = var.region
+  environment     = local.prefix
+  callback_urls   = var.callback_urls
+  logout_urls     = var.logout_urls
+  google_client_id        = var.google_client_id
+  google_client_secret    = var.google_client_secret
 }

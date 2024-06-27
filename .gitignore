@@ -31,3 +31,5 @@ Thumbs.db
 # to change depending on the environment.
 *.tfvars
 *.tfvars.json
+
+.env

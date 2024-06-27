@@ -11,7 +11,8 @@ const s3Client = new S3Client();
 export const handler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
-  const { userName, imageId } = event.pathParameters || {};
+  const { imageId } = event.pathParameters || {};
+  const userName = event?.requestContext?.authorizer?.claims?.username;
 
   if (!userName || !imageId) {
     return {
@@ -22,7 +23,6 @@ export const handler = async (
 
   try {
     const imageData = await getImageData(dynamoDBClient, userName, imageId);
-
     if (!imageData) {
       return {
         statusCode: 404,
@@ -37,11 +37,13 @@ export const handler = async (
     );
 
     return {
-      statusCode: 302,
-      headers: {
-        Location: url,
-      },
-      body: "",
+      statusCode: 200,
+
+      body: JSON.stringify({
+        userName,
+        url,
+        imageName: imageData.imageName,
+      }),
     };
   } catch (error) {
     return handleErrors(error);
