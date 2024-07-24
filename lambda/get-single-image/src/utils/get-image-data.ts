@@ -23,5 +23,6 @@ export const getImageData = async (
   return {
     bucket: response.Item.imageBucket.S,
     key: response.Item.imageKey.S,
+    imageName: response.Item.imageName.S,
   };
 };

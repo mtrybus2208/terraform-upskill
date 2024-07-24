@@ -14,9 +14,9 @@ const s3Client = new S3Client();
 export const handler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
-  const pathParameters = event.pathParameters || {};
+  const userName = event?.requestContext?.authorizer?.claims?.username;
 
-  if (!pathParameters.userName) {
+  if (!userName) {
     return {
       statusCode: 403,
       body: JSON.stringify({ error: "Missing userName parameter - get" }),
@@ -28,7 +28,7 @@ export const handler = async (
       TableName: process.env.DYNAMODB_TABLE_NAME || "",
       KeyConditionExpression: "userName = :userName",
       ExpressionAttributeValues: {
-        ":userName": pathParameters.userName,
+        ":userName": userName,
       },
       ConsistentRead: true,
     };
@@ -51,7 +51,7 @@ export const handler = async (
     return {
       statusCode: 200,
       body: JSON.stringify({
-        userName: pathParameters.userName,
+        userName,
         urls,
       }),
     };

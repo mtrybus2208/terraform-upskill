@@ -1,3 +1,7 @@
+variable "environment" {
+  type = string
+}
+
 variable "region" {
   type        = string
   description = "AWS region identifier."
@@ -8,28 +12,15 @@ variable "region" {
   }
 }
 
-variable "environment" {
-  description = "The environment to deploy (dev or prod)"
-  type        = string
-  default     = "dev"
-}
-
-variable "allowed_origins" {
-  description = "Allowed origins for CORS"
-  type        = string
-  default     = "*"
-}
-
 variable "callback_urls" {
   description = "List of callback URLs"
-  type        = list(string) 
+  type        = list(string)
 }
 
 variable "logout_urls" {
   description = "List of logout URLs"
-  type        = list(string) 
+  type        = list(string)
 }
-
 
 variable "google_client_id" {
   description = "The client ID for Google OAuth"
