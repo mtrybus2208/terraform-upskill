@@ -3,12 +3,12 @@
 resource "aws_iam_policy" "photo_api_authorizer_logging_policy" {
   description = "IAM policy allowing logging actions for photo_api_authorizer lambda function."
 
-  name   = "${var.environment}-photo-api-authorizer-logging-policy"
+  name   = "${var.prefix}-photo-api-authorizer-logging-policy"
   policy = data.aws_iam_policy_document.photo_api_authorizer_logging_policy_doc.json
 }
 
 resource "aws_iam_role" "photo_api_authorizer_role" {
-  name               = "${var.environment}-photo-api-authorizer"
+  name               = "${var.prefix}-photo-api-authorizer"
   assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
 }
 
@@ -21,17 +21,17 @@ resource "aws_iam_role_policy_attachment" "photo_api_authorizer_logging_policy_a
 # get_images_for_user
 
 resource "aws_iam_role" "get_images_for_user_role" {
-  name               = "${var.environment}-get-images-for-user-role"
+  name               = "${var.prefix}-get-images-for-user-role"
   assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
 }
 
 resource "aws_iam_policy" "get_images_for_user_policy" {
-  name   = "${var.environment}-get-images-for-user-policy"
+  name   = "${var.prefix}-get-images-for-user-policy"
   policy = data.aws_iam_policy_document.get_images_for_user_policy_doc.json
 }
 
 resource "aws_iam_policy" "get_images_for_user_logging_policy" {
-  name   = "${var.environment}-get-images-for-user-logging-policy"
+  name   = "${var.prefix}-get-images-for-user-logging-policy"
   policy = data.aws_iam_policy_document.get_images_for_user_logging_policy_doc.json
 }
 
@@ -48,13 +48,13 @@ resource "aws_iam_role_policy_attachment" "get_images_for_user_logging_policy_at
 # iam get_single_image lambda fn
 
 resource "aws_iam_role" "get_single_image_role" {
-  name               = "${var.environment}-get-single-image-role"
+  name               = "${var.prefix}-get-single-image-role"
   assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
 }
 
 
 resource "aws_iam_policy" "get_single_image_policy" {
-  name   = "${var.environment}-get-single-image-policy"
+  name   = "${var.prefix}-get-single-image-policy"
   policy = data.aws_iam_policy_document.get_single_image_policy_doc.json
 }
 
@@ -64,7 +64,7 @@ resource "aws_iam_role_policy_attachment" "get_single_image_policy_attachment" {
 }
 
 resource "aws_iam_policy" "get_single_image_logging_policy" {
-  name   = "${var.environment}-get-single-image-logging-policy"
+  name   = "${var.prefix}-get-single-image-logging-policy"
   policy = data.aws_iam_policy_document.get_single_image_logging_policy_doc.json
 }
 
@@ -78,14 +78,14 @@ resource "aws_iam_role_policy_attachment" "get_single_image_logging_policy_attac
 resource "aws_iam_policy" "logging_policy" {
   description = "IAM policy allowing logging actions for Lambda functions."
 
-  name   = "${var.environment}-logging-policy"
+  name   = "${var.prefix}-logging-policy"
   policy = data.aws_iam_policy_document.logging_policy_doc.json
 }
 
 resource "aws_iam_role" "presigned_url_generator_role" {
   description = "IAM role for Lambda functions to allow logging actions."
 
-  name               = "${var.environment}-logging-role"
+  name               = "${var.prefix}-logging-role"
   assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
 }
 
@@ -108,7 +108,7 @@ data "aws_iam_policy_document" "s3_access_policy" {
 }
 
 resource "aws_iam_policy" "s3_access_policy" {
-  name   = "${var.environment}-s3-access-policy"
+  name   = "${var.prefix}-s3-access-policy"
   policy = data.aws_iam_policy_document.s3_access_policy.json
 }
 

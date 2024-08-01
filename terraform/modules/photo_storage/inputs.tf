@@ -2,6 +2,10 @@ variable "environment" {
   type = string
 }
 
+variable "prefix" {
+  type = string
+}
+
 variable "allowed_origins" {
   description = "Allowed origins for CORS"
   type        = string
@@ -17,4 +21,13 @@ variable "region" {
     error_message = "Must be a valid AWS region identifier."
   }
 }
- 
+
+variable "image_upload_notifications_topic_arn" {
+  description = "sns notification table arn"
+  type        = string
+}
+
+variable "sns_image_upload_handler_arn" {
+  description = "sns notidication lambda arn"
+  type        = string
+}

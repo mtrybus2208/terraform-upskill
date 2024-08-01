@@ -1,5 +1,5 @@
 resource "aws_apigatewayv2_api" "photo_api" {
-  name          = "${var.environment}-photo-api"
+  name          = "${var.prefix}-photo-api"
   protocol_type = "HTTP"
   cors_configuration {
     allow_origins = [var.allowed_origins]
@@ -9,14 +9,14 @@ resource "aws_apigatewayv2_api" "photo_api" {
 }
 
 resource "aws_apigatewayv2_authorizer" "photo_api_authorizer" {
-  name                              = "photo-api-authorizer"
-  api_id                            = aws_apigatewayv2_api.photo_api.id
-  authorizer_type                   = "JWT"
-  identity_sources                  = ["$request.header.Authorization"]
-    jwt_configuration {
-      audience = [var.user_pool_client_id]
-      issuer   = "https://${var.user_pool_endpoint}"
-    } 
+  name             = "photo-api-authorizer"
+  api_id           = aws_apigatewayv2_api.photo_api.id
+  authorizer_type  = "JWT"
+  identity_sources = ["$request.header.Authorization"]
+  jwt_configuration {
+    audience = [var.user_pool_client_id]
+    issuer   = "https://${var.user_pool_endpoint}"
+  }
 }
 
 resource "aws_apigatewayv2_stage" "photo_api_stage" {
@@ -41,7 +41,7 @@ resource "aws_apigatewayv2_route" "photo_post_route" {
   route_key          = "POST /photos"
   target             = "integrations/${aws_apigatewayv2_integration.photo_post_integration.id}"
   authorization_type = "JWT"
-  authorizer_id = aws_apigatewayv2_authorizer.photo_api_authorizer.id
+  authorizer_id      = aws_apigatewayv2_authorizer.photo_api_authorizer.id
 }
 
 # get all images
@@ -57,7 +57,7 @@ resource "aws_apigatewayv2_route" "photo_get_route" {
   route_key          = "GET /users/{userName}/photos"
   target             = "integrations/${aws_apigatewayv2_integration.photo_get_integration.id}"
   authorization_type = "JWT"
-  authorizer_id = aws_apigatewayv2_authorizer.photo_api_authorizer.id
+  authorizer_id      = aws_apigatewayv2_authorizer.photo_api_authorizer.id
 }
 
 # get single photo
@@ -66,7 +66,7 @@ resource "aws_apigatewayv2_route" "photo_get_single_route" {
   route_key          = "GET /users/{userName}/photos/{imageId}"
   target             = "integrations/${aws_apigatewayv2_integration.photo_get_single_integration.id}"
   authorization_type = "JWT"
-  authorizer_id = aws_apigatewayv2_authorizer.photo_api_authorizer.id
+  authorizer_id      = aws_apigatewayv2_authorizer.photo_api_authorizer.id
 }
 
 resource "aws_apigatewayv2_integration" "photo_get_single_integration" {

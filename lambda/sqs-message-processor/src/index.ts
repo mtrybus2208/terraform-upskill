@@ -1,34 +1,45 @@
+import { SFNClient, StartExecutionCommand } from "@aws-sdk/client-sfn";
 import { SQSHandler } from "aws-lambda";
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
-import { randomUUID } from "crypto";
 
+import { getSfnClient } from "./clients/sfn-client";
+import { ImageMetaDataDto } from "../../shared/types";
 import { handleErrors } from "../../shared/utils/handle-errors";
 
-const dynamoDBClient = new DynamoDBClient({});
-const ddbDocClient = DynamoDBDocument.from(dynamoDBClient);
-
 export const handler: SQSHandler = async (event) => {
-  for (const record of event.Records) {
-    const body = JSON.parse(record.body);
+  const records = event.Records;
+  console.log(
+    "Received events: ",
+    records.map((record) => record.body)
+  );
+
+  const promises = [];
+  const sfnClient = getSfnClient();
+
+  for (const record of records) {
+    const body: ImageMetaDataDto = JSON.parse(record.body);
 
     try {
-      const result = await ddbDocClient.put({
-        TableName: process.env.DYNAMODB_TABLE_NAME || "",
-        Item: {
-          userName: body.userName,
-          imageId: randomUUID(),
-          imageName: body.key.split("/").pop(),
-          imageBucket: body.bucket,
-          imageKey: body.key,
-          timestamp: Date.now(),
-        },
-      });
-
-      console.log("Metadata saved to DynamoDB:");
-      console.log("Message sent to SQS:", result.$metadata);
+      const startExecutionPromise = createStartExecutionCommand(
+        sfnClient,
+        body
+      );
+      promises.push(startExecutionPromise);
     } catch (error) {
       handleErrors(error);
     }
+
+    await Promise.all(promises);
   }
+};
+
+const createStartExecutionCommand = (
+  sfnClient: SFNClient,
+  input: ImageMetaDataDto
+) => {
+  const startExecutionCommand = new StartExecutionCommand({
+    stateMachineArn: process.env.STATE_MACHINE_ARN,
+    input: JSON.stringify(input),
+  });
+
+  return sfnClient.send(startExecutionCommand);
 };

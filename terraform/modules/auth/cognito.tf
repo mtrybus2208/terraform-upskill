@@ -1,5 +1,5 @@
 resource "aws_cognito_user_pool" "photo_management_user_pool" {
-  name = "${var.environment}-photo-management-user-pool"
+  name = "${var.prefix}-photo-management-user-pool"
 
   email_verification_subject = "Your Verification Code"
   email_verification_message = "Please use the following code: {####}"
@@ -45,7 +45,7 @@ resource "aws_cognito_user_pool" "photo_management_user_pool" {
 }
 
 resource "aws_cognito_user_pool_domain" "photo_management_user_pool_domain" {
-  domain       = "${var.environment}-photo-management"
+  domain       = "${var.prefix}-photo-management"
   user_pool_id = aws_cognito_user_pool.photo_management_user_pool.id
 }
 
@@ -68,7 +68,7 @@ resource "aws_cognito_identity_provider" "google_provider" {
 }
 
 resource "aws_cognito_user_pool_client" "photo_management_user_pool_client" {
-  name = "${var.environment}-photo-management-user-pool-client"
+  name = "${var.prefix}-photo-management-user-pool-client"
   explicit_auth_flows = [
     "ALLOW_USER_PASSWORD_AUTH",
     "ALLOW_REFRESH_TOKEN_AUTH",

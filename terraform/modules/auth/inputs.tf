@@ -2,6 +2,10 @@ variable "environment" {
   type = string
 }
 
+variable "prefix" {
+  type = string
+}
+
 variable "region" {
   type        = string
   description = "AWS region identifier."

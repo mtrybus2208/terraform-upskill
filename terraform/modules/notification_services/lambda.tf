@@ -1,7 +1,7 @@
 # dynamo-image-upload-handler fn
 
 resource "aws_lambda_function" "dynamo_image_upload_handler" {
-  function_name    = "${var.environment}-dynamo-image-upload-handler"
+  function_name    = "${var.prefix}-dynamo-image-upload-handler"
   s3_bucket        = var.photo_edit_lambda_bucket_id
   s3_key           = aws_s3_object.dynamo_image_upload_handler.key
   handler          = "index.handler"
@@ -36,7 +36,7 @@ resource "aws_cloudwatch_log_group" "dynamo_image_upload_handler_log_group" {
 # sns_image_upload_handler fn
 
 resource "aws_lambda_function" "sns_image_upload_handler" {
-  function_name    = "${var.environment}-sns-image-upload-handler"
+  function_name    = "${var.prefix}-sns-image-upload-handler"
   s3_bucket        = var.photo_edit_lambda_bucket_id
   s3_key           = aws_s3_object.sns_image_upload_handler.key
   handler          = "index.handler"
@@ -48,6 +48,7 @@ resource "aws_lambda_function" "sns_image_upload_handler" {
   environment {
     variables = {
       REGION = var.region
+      IMAGE_UPLOAD_TOPIC_ARN = var.image_upload_notifications_topic_arn
     }
   }
 }
@@ -63,4 +64,27 @@ resource "aws_lambda_permission" "sns_lambda_permission" {
   function_name = aws_lambda_function.sns_image_upload_handler.function_name
   principal     = "sns.amazonaws.com"
   source_arn    = aws_sns_topic.image_upload_notifications_topic.arn
+}
+
+# policies for sns_image_upload_handler
+data "aws_iam_policy_document" "sns_image_upload_handler_publish_sns_policy_doc" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "sns:Publish"
+    ]
+    resources = [
+      var.image_upload_notifications_topic_arn
+    ]
+  }
+}
+
+resource "aws_iam_policy" "sns_image_upload_handler_publish_sns_policy" {
+  name   = "${var.prefix}-sns-image-upload-handler-publish-sns-policy"
+  policy = data.aws_iam_policy_document.sns_image_upload_handler_publish_sns_policy_doc.json
+}
+
+resource "aws_iam_role_policy_attachment" "sns_image_upload_handler_publish_sns_policy_attachment" {
+  role       = aws_iam_role.sns_image_upload_handler_role.name
+  policy_arn = aws_iam_policy.sns_image_upload_handler_publish_sns_policy.arn
 }

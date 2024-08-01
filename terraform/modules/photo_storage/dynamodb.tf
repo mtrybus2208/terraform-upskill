@@ -1,5 +1,5 @@
 resource "aws_dynamodb_table" "image_metadata" {
-  name             = "${var.environment}-image-metadata"
+  name             = "${var.prefix}-image-metadata"
   billing_mode     = "PAY_PER_REQUEST"
   hash_key         = "userName"
   range_key        = "imageId"
