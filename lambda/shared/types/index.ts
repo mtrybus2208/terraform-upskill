@@ -4,21 +4,13 @@ export interface HttpError extends Error {
 
 export enum SnsEventTypes {
   IMAGE_CREATED = "IMAGE_CREATED",
+  IMAGE_VALIDATION_ERROR = "IMAGE_VALIDATION_ERROR",
 }
 
-export type ImageMetaDataDto = {
+export type ImageValidationErrorDto = {
   userName: string;
-  imageKey: string;
+  validationMsg: string;
   imageName: string;
-};
-
-export type ImageMetaDataItem = {
-  userName: string;
-  imageKey: string;
-  imageName: string;
-  imageBucket: string;
-  imageId: string;
-  timestamp: number;
 };
 
 export type ImageMetaDataEventMap = Record<
@@ -30,3 +22,39 @@ export interface SnsEvent<T = unknown, U = unknown> {
   data: U;
   timestamp: number;
 }
+
+export type ImageUploadData = {
+  bucket: string;
+  key: string;
+  userName: string;
+  fileSize: number;
+};
+
+export type SnsImageUploadDto = {
+  type: SnsEventTypes;
+  message: string;
+  userName: string;
+  imageName: string;
+};
+
+export type ValidationInfo = {
+  type: SnsEventTypes;
+  message: string;
+  validationPassed: boolean;
+};
+
+export type ImageMetaDataItem = {
+  userName: string;
+  imageKey: string;
+  imageName: string;
+  imageBucket: string;
+  timestamp: number;
+  imageId?: string;
+};
+
+export type ImageMetaDataDto = {
+  userName: string;
+  imageKey: string;
+  imageBucket: string;
+  fileSize?: number;
+};

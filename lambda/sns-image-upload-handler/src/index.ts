@@ -1,15 +1,16 @@
-import { SNSHandler } from "aws-lambda";
-
 import { handleErrors } from "../../shared/utils/handle-errors";
+import { SnsImageUploadDto, SnsEventTypes } from "../../shared/types";
+import { publishToSns } from "./utils/sns-publish";
 
-export const handler: SNSHandler = async (event) => {
-  for (const record of event.Records) {
-    try {
-      const msg = record.Sns.Message;
-
-      console.log({ msg });
-    } catch (error) {
-      handleErrors(error);
-    }
+export const handler = async (event: SnsImageUploadDto) => {
+  try {
+    await publishToSns<SnsEventTypes, SnsImageUploadDto>(event.type, {
+      userName: event.userName,
+      message: event.message,
+      imageName: event.imageName,
+      type: event.type,
+    });
+  } catch (error) {
+    handleErrors(error);
   }
 };

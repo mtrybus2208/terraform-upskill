@@ -2,6 +2,10 @@ variable "environment" {
   type = string
 }
 
+variable "prefix" {
+  type = string
+}
+
 variable "allowed_origins" {
   description = "Allowed origins for CORS"
   type        = string
@@ -46,5 +50,10 @@ variable "image_metadata_table_arn" {
 
 variable "image_metadata_table_stream_arn" {
   description = "image metadata table stream arn"
+  type        = string
+}
+
+ variable "image_upload_notifications_topic_arn" {
+  description = "sns notification table arn"
   type        = string
 }

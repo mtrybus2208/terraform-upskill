@@ -22,12 +22,12 @@ variable "allowed_origins" {
 
 variable "callback_urls" {
   description = "List of callback URLs"
-  type        = list(string) 
+  type        = list(string)
 }
 
 variable "logout_urls" {
   description = "List of logout URLs"
-  type        = list(string) 
+  type        = list(string)
 }
 
 
@@ -41,4 +41,10 @@ variable "google_client_secret" {
   description = "The client secret for Google OAuth"
   type        = string
   sensitive   = true
+}
+
+variable "notification_email" {
+  description = "Email to sns image upload notofication"
+  type        = string
+  default     = "test123@gmail.com"
 }

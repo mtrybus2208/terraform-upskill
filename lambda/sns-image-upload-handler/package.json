@@ -7,11 +7,13 @@
     "build": "node esbuild.config.js",
     "prepare": "npm run build"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@aws-sdk/client-sns": "^3.621.0"
+  },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.92",
     "@types/node": "^20.12.12",
-    "typescript": "^5.4.5",
-    "esbuild": "^0.21.5"
+    "esbuild": "^0.21.5",
+    "typescript": "^5.4.5"
   }
 }

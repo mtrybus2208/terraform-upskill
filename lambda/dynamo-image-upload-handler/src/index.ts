@@ -18,11 +18,7 @@ export const handler: DynamoDBStreamHandler = async (event) => {
 
         await publishToSns<SnsEventTypes, ImageMetaDataDto>(
           SnsEventTypes.IMAGE_CREATED,
-          {
-            userName: data.userName,
-            imageKey: data.imageName,
-            imageName: data.imageName,
-          }
+          data
         );
       }
     } catch (error) {

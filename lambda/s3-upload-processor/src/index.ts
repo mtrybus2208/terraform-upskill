@@ -2,6 +2,8 @@ import { S3Handler } from "aws-lambda";
 import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
 import { S3Client, HeadObjectCommand } from "@aws-sdk/client-s3";
 
+import { ImageMetaDataDto } from "../../shared/types";
+
 const sqsClient = new SQSClient();
 const s3Client = new S3Client();
 const queueUrl = process.env.SQS_QUEUE_URL || "";
@@ -23,14 +25,22 @@ export const handler: S3Handler = async (event) => {
       const response = await s3Client.send(headObjectCommand);
 
       const userName = response.Metadata?.username;
+      const fileSize = response.ContentLength || 0;
 
       if (!userName) {
         throw new Error("Missing userName in S3 object metadata");
       }
 
+      const msgBody: ImageMetaDataDto = {
+        userName: userName,
+        imageKey: key,
+        imageBucket: bucket,
+        fileSize,
+      };
+
       const params = {
         QueueUrl: queueUrl,
-        MessageBody: JSON.stringify({ bucket, key, userName }),
+        MessageBody: JSON.stringify(msgBody),
         MessageDeduplicationId: key,
         MessageGroupId: "default",
       };

@@ -2,6 +2,11 @@ variable "environment" {
   type = string
 }
 
+variable "prefix" {
+  type = string
+}
+
+
 variable "allowed_origins" {
   description = "Allowed origins for CORS"
   type        = string
@@ -58,12 +63,12 @@ variable "user_pool_id" {
   type        = string
 }
 
- variable "user_pool_endpoint" {
+variable "user_pool_endpoint" {
   description = "user pool endpoint"
   type        = string
 }
 
- variable "user_pool_client_id" {
+variable "user_pool_client_id" {
   description = "user pool client id"
   type        = string
 }

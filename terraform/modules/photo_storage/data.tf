@@ -13,11 +13,6 @@ data "aws_iam_policy_document" "assume_role_policy" {
   }
 }
 
-resource "aws_iam_role" "s3_upload_processor_role" {
-  name               = "${var.environment}-s3-upload-processor-role"
-  assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
-}
-
 
 data "aws_iam_policy_document" "sqs_message_processor_logging_policy_doc" {
   statement {
@@ -94,4 +89,22 @@ data "archive_file" "sqs_message_processor" {
   type        = "zip"
   source_dir  = "${path.root}/../lambda/sqs-message-processor/dist"
   output_path = "${path.root}/../lambda/sqs-message-processor/build/sqs-message-processor-handler.zip"
+}
+
+data "archive_file" "save_image_metadata_handler" {
+  type        = "zip"
+  source_dir  = "${path.root}/../lambda/save-image-metadata-handler/dist"
+  output_path = "${path.root}/../lambda/save-image-metadata-handler/build/save-image-metadata-handler.zip"
+}
+
+data "archive_file" "image_validation_handler" {
+  type        = "zip"
+  source_dir  = "${path.root}/../lambda/image-validation-handler/dist"
+  output_path = "${path.root}/../lambda/image-validation-handler/build/image-validation-handler.zip"
+}
+
+data "archive_file" "edit_image_handler" {
+  type        = "zip"
+  source_dir  = "${path.root}/../lambda/edit-image-handler/dist"
+  output_path = "${path.root}/../lambda/edit-image-handler/build/edit-image-handler.zip"
 }
