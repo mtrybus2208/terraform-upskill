@@ -1,0 +1,17 @@
+{
+  "name": "photo-api-authorizer",
+  "version": "1.0.0",
+  "description": "Lambda authorizer for photo api",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "node esbuild.config.js",
+    "prepare": "npm run build"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.92",
+    "@types/node": "^20.12.12",
+    "typescript": "^5.4.5",
+    "esbuild": "^0.21.5"
+  }
+}
